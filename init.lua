@@ -167,7 +167,7 @@ vim.opt.confirm = true
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 vim.keymap.set('i', 'jk', '<Esc>')
-vim.keymap.set('n', '<Leader>e', '<CMD>Oil<CR>', { desc = 'Open parent directory' })
+vim.keymap.set('n', '<Leader>-', '<CMD>Oil<CR>', { desc = 'Open parent directory' })
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
@@ -194,6 +194,9 @@ vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left wind
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+vim.keymap.set('n', '<S-h>', '<cmd>bprev<cr>', { desc = 'Prev tab' })
+vim.keymap.set('n', '<S-l>', '<cmd>bnext<cr>', { desc = 'Next tab' })
+vim.keymap.set('n', '<leader>q', '<cmd>bdelete<cr>', { desc = 'Close tab' })
 
 -- NOTE: Some terminals have coliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
@@ -262,15 +265,69 @@ require('lazy').setup({
     -- this is equivalent to setup({}) function
   },
   {
+    'nvim-neo-tree/neo-tree.nvim',
+    branch = 'v3.x',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-tree/nvim-web-devicons',
+      'MunifTanjim/nui.nvim',
+    },
+    cmd = 'Neotree',
+    keys = {
+      { '<leader>e', '<cmd>Neotree toggle<cr>', desc = 'Explorer (Neo-tree)' },
+      { '<leader>o', '<cmd>Neotree focus<cr>', desc = 'Focus Explorer' },
+    },
+    opts = {
+      filesystem = {
+        follow_current_file = { enabled = true },
+        use_libuv_file_watcher = true,
+        filtered_items = {
+          hide_dotfiles = false,
+          hide_gitignored = true,
+        },
+      },
+      window = {
+        width = 32,
+        mappings = {
+          ['t'] = 'open_tabnew',
+        },
+      },
+    },
+  },
+  {
     'stevearc/oil.nvim',
     ---@module 'oil'
     ---@type oil.SetupOpts
-    opts = {},
+    opts = {
+      view_options = {
+        show_hidden = true,
+      },
+    },
     -- Optional dependencies
     dependencies = { { 'echasnovski/mini.icons', opts = {} } },
     -- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
     -- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
     lazy = false,
+  },
+  {
+    'CopilotC-Nvim/CopilotChat.nvim',
+    branch = 'canary',
+    dependencies = {
+      { 'github/copilot.vim' },
+      { 'nvim-lua/plenary.nvim' },
+    },
+    opts = {
+      -- You can tweak panel behavior later; defaults are fine to start.
+    },
+    keys = {
+      { '<leader>cc', '<cmd>CopilotChatToggle<cr>', desc = 'Copilot Chat (toggle)' },
+      { '<leader>co', '<cmd>CopilotChatOpen<cr>', desc = 'Copilot Chat (open)' },
+      { '<leader>cq', '<cmd>CopilotChatClose<cr>', desc = 'Copilot Chat (close)' },
+    },
+  },
+  { --copilot
+    'github/copilot.vim',
+    event = 'InsertEnter',
   },
   {
     'mrcjkb/rustaceanvim',
